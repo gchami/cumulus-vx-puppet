@@ -11,11 +11,12 @@ else
   exit 1
 fi
 
-example_ospf_dir='/home/cumulus/example-ospfunnum-puppet'
+example_ospf_dir='/home/cumulus/git/example-ospfunnum-puppet'
+git_dir='/home/cumulus/git'
 
-if [ ! -d $example_ospf_dir ]; then
-  echo "Git clone example-ospfunnum-puppet"
-  git clone https://github.com/CumulusNetworks/example-ospfunnum-puppet.git $example_ospf_dir
+if [ ! -d $git ]; then
+  echo "Git clone demo"
+  git https://github.com/gchami/cumulus-vx-puppet.git $git_dir
 fi
 
 echo "Cd into /home/cumulus/example-ospfunnum-puppet"

@@ -72,6 +72,13 @@
 
     - copy: content="domain lab.local\nsearch lab.local\nnameserver 127.0.0.1" dest=/etc/resolv.conf
 
-    # Install the puppet demo
-    - name: "Apt get Puppet Demo "
-      apt: name=cldemo-wbench-ospfunnum-puppet state=present
+    # Install the puppet components for demo
+    - name: "apt-get cldemo-wbench-puppetserver"
+      apt: name="cldemo-wbench-puppetserver" state=present
+
+    - name: "apt-get ruby2.1-dev"
+      apt: name=ruby2.1-dev state=present
+
+    - name: "apt-get ruby-switch"
+      apt: name=ruby-switch state=present
+
