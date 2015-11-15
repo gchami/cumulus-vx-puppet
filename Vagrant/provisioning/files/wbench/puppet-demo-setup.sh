@@ -43,9 +43,8 @@ do
   ln -sf $example_ospf_dir/$i /etc/puppet/$i
 done
 
-echo "symlink site.pp to topology specific version"
-WBENCHCLASS=`jq -r '.[] | .workbench.wbench_class_base' /var/www/wbench.json`
-ln -sf /etc/puppet/manifests/site-${WBENCHCLASS}.pp /etc/puppet/manifests/site.pp
+echo "symlink site.pp to the relevant site.pp for this VX topopology"
+ln -sf /etc/puppet/manifests/site-4l2s2h.pp /etc/puppet/manifests/site.pp
 
 echo "copy license files"
 cp -f /var/www/*.lic /etc/puppet/modules/base/files/
