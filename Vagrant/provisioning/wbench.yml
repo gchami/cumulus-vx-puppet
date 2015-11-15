@@ -49,7 +49,7 @@
     - file: src=topology-full.dot dest=/var/www/topology.dot state=link
     - copy: src=files/www/wbench.json dest=/var/www/wbench.json
     - copy: src=files/wbench/resolv.conf dest=/etc/resolv.conf
-    - copy: src=files/wbench/puppet-demo-setup.sh dest=/tmp/puppet-demo-setup.sh
+    - copy: src=files/wbench/puppet-demo-setup.sh dest=/tmp/puppet-demo-setup.sh  mode=0777
 
     # DHCP server for the management network
     - name: "Install ISC DHCP"
@@ -85,4 +85,4 @@
       apt: name=ruby-switch state=present
 
     # Run demo setup script
-    - script: /tmp/puppet-demo-setup.sh
+    - shell: /tmp/puppet-demo-setup.sh

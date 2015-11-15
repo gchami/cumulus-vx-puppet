@@ -14,9 +14,9 @@ fi
 example_ospf_dir='/home/cumulus/git/example-ospfunnum-puppet'
 git_dir='/home/cumulus/git'
 
-if [ ! -d $git ]; then
+if [ ! -d $example_ospf_dir ]; then
   echo "Git clone demo"
-  git https://github.com/gchami/cumulus-vx-puppet.git $git_dir
+  git clone https://github.com/gchami/cumulus-vx-puppet.git $git_dir
 fi
 
 echo "Cd into /home/cumulus/example-ospfunnum-puppet"
@@ -52,5 +52,3 @@ cp -f /var/www/*.lic /etc/puppet/modules/base/files/
 echo "change ownership of example-ospfunnum-puppet to cumulus"
 chown -R cumulus:cumulus $example_ospf_dir
 
-echo "puppet plugin sync"
-/usr/bin/puppet plugin download

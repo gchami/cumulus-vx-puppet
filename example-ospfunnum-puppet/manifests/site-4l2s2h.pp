@@ -22,11 +22,7 @@ node 'leaf1.lab.local' {
         { 'id'      => 'br0',
           'address' => '10.4.1.1',
           'netmask' => '25',
-          'members' => ['swp32s0'] },
-        { 'id' => 'br1',
-          'address' => '10.4.1.129',
-          'netmask' => '25',
-          'members' => ['swp32s1'] }
+          'members' => ['swp3'] },
     ]
     include ospfunnum::role::switchbase
 }
@@ -49,7 +45,7 @@ node 'leaf3.lab.local' {
     $int_unnumbered = [ 'swp1', 'swp2' ]
     $int_bridges = [
         { 'id'      => 'br0',
-          'address' => '10.4.2.1',
+          'address' => '10.4.3.1',
           'netmask' => '25',
           'members' => ['swp3'] }
     ]
@@ -61,7 +57,7 @@ node 'leaf4.lab.local' {
     $int_unnumbered = [ 'swp1', 'swp2' ]
     $int_bridges = [
         { 'id'      => 'br0',
-          'address' => '10.4.2.1',
+          'address' => '10.4.4.1',
           'netmask' => '25',
           'members' => ['swp3'] }
     ]
