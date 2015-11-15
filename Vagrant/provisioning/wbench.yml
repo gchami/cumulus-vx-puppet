@@ -48,6 +48,7 @@
     - copy: src=files/www/topology-full.dot dest=/var/www/topology-full.dot
     - file: src=topology-full.dot dest=/var/www/topology.dot state=link
     - copy: src=files/www/wbench.json dest=/var/www/wbench.json
+    - copy: src=files/wbench/resolv.conf dest=/etc/resolv.conf
     - copy: src=files/wbench/puppet-demo-setup.sh dest=/tmp/puppet-demo-setup.sh
 
     # DHCP server for the management network
