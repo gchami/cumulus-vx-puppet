@@ -1,0 +1,16 @@
+{
+  "Gemfile": "8a06c4d58ddf163ac95ac4f7b1266c37",
+  "Gemfile.lock": "c7be8403935c7d05d1e778db8df9b293",
+  "LICENSE": "b234ee4d69f5fce4486a80fdaf4a4263",
+  "README.md": "4d5c010bf08495d16c11874cd476b29b",
+  "Rakefile": "0c43e6ba384dd874c630469592f73b85",
+  "lib/puppet/provider/cumulus_ports/cumulus.rb": "6070ac7799099d86aa413992142b2c27",
+  "lib/puppet/type/cumulus_ports.rb": "abc60bc4a0ffc1ce00dfb8c66e5b5b1b",
+  "metadata.json": "6d7664c70422721c44db4baf4eed6898",
+  "spec/files/ports.conf": "ad8a9459f9cf8b18bfaff5ca8e95019c",
+  "spec/files/ports.conf.generated": "03c0c07a22da668368ae4df69f5547d8",
+  "spec/spec_helper.rb": "1d33abfe9bc6535474407e33dac040ef",
+  "spec/unit/provider/cumulus_ports/base_spec.rb": "7272be2b2de4584329673ceef0d4b451",
+  "spec/unit/type/cumulus_ports_spec.rb": "b1160ec6ad787038e4dd9af318568783",
+  "tests/init.pp": "47328b9b3f1e9c875c0d92858a23765b"
+}
