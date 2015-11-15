@@ -1,0 +1,46 @@
+# static DHCP hosts
+host leaf1 {
+  hardware ethernet   08:00:27:52:fe:1e;
+  fixed-address       192.168.0.11;
+  option host-name    "leaf1";
+}
+host leaf2 {
+  hardware ethernet   08:00:27:52:fe:1f;
+  fixed-address       192.168.0.12;
+  option host-name    "leaf2";
+}
+host leaf3 {
+  hardware ethernet   08:00:27:52:fe:3f;
+  fixed-address       192.168.0.13;
+  option host-name    "leaf3";
+}
+host leaf4 {
+  hardware ethernet   08:00:27:52:fe:4f;
+  fixed-address       192.168.0.14;
+  option host-name    "leaf4";
+}
+host spine1 {
+  hardware ethernet   08:00:27:52:ff:2e;
+  fixed-address       192.168.0.15;
+  option host-name    "spine1";
+}
+host spine2 {
+  hardware ethernet   08:00:27:52:ff:2f;
+  fixed-address       192.168.0.16;
+  option host-name    "spine2";
+}
+host host1 {
+  hardware ethernet   08:00:27:52:fe:01;
+  fixed-address       192.168.0.21;
+  option host-name    "host1";
+}
+host host2 {
+  hardware ethernet   08:00:27:52:fe:02;
+  fixed-address       192.168.0.22;
+  option host-name    "host2";
+}
+host host3 {
+  hardware ethernet   08:00:27:52:fe:03;
+  fixed-address       192.168.0.23;
+  option host-name    "host3";
+}

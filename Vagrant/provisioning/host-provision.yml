@@ -1,0 +1,17 @@
+---
+- hosts: all
+  user: vagrant
+  sudo: yes
+  tasks:
+    - name: install ifenslave
+      apt: name=ifenslave state=present
+
+    - name: install vlan
+      apt: name=vlan state=present
+
+    - name: adding bonding and rtc modules to /etc/modules
+      lineinfile: dest=/etc/modules line="{{ item }}"
+      with_items: 
+        - "rtc"
+        - "bonding" 
+        - "8021q"

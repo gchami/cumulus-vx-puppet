@@ -1,0 +1,330 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+hosts = { 'wbench' => '192.168.0.1',
+          'leaf1'  => '192.168.0.11',
+          'leaf2'  => '192.168.0.12',
+          'leaf3'  => '192.168.0.13',
+          'leaf4'  => '192.168.0.14',
+          'spine1' => '192.168.0.15',
+          'spine2' => '192.168.0.16',
+          'host1'  => '192.168.0.21',
+          'host2'  => '192.168.0.22',
+          'host3'  => '192.168.0.23'
+  }
+
+domain = 'lab.local'
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+
+  config.vm.provision :ansible do |ansible|
+    ansible.extra_vars = {
+      hosts: hosts,
+      domain: domain
+    }
+    ansible.playbook = 'provisioning/common.yml'
+    ansible.sudo = true
+  end
+
+  config.vm.define 'wbench' do |wbench|
+    wbench.vm.box = 'ubuntu/precise64'
+    wbench.vm.hostname = "wbench.#{domain}"
+
+    # Internal management network
+    wbench.vm.network 'private_network', virtualbox__intnet: 'mgmt', ip: "#{hosts['wbench']}", network: "255.255.255.0"
+
+    # Apply workbench specific configuration
+    wbench.vm.provision :ansible do |ansible|
+      ansible.playbook = 'provisioning/wbench.yml'
+      ansible.sudo = true
+    end
+  end
+
+  config.vm.define 'leaf1' do |leaf1|
+    leaf1.vm.box = 'cumulus-vx-2.5.4-vbox-gchami-2s'
+    leaf1.vm.hostname = "leaf1.#{domain}"
+
+    # Fix the MAC of the management interface
+    leaf1.vm.provider 'virtualbox' do |vbox|
+      vbox.customize ['modifyvm', :id, '--macaddress2', '08002752fe1e']
+    end
+
+    # Internal management network
+    leaf1.vm.network 'private_network', virtualbox__intnet: 'mgmt', cumulus__intname: 'eth1', type: 'dhcp'
+
+    # Internal network for swp* interfaces.
+    leaf1.vm.network 'private_network', virtualbox__intnet: 'l1s1', cumulus__intname: 'swp1'
+    leaf1.vm.network 'private_network', virtualbox__intnet: 'l1s2', cumulus__intname: 'swp2'
+    leaf1.vm.network 'private_network', virtualbox__intnet: 'host1', cumulus__intname: 'swp3'
+
+    # "spares"
+    (4..17).each do |intf|
+      leaf1.vm.network 'private_network', virtualbox__intnet: 'unused', cumulus__intname: "swp#{intf}", auto_config: false
+    end
+    (21..37).each do |intf|
+      leaf1.vm.network 'private_network', virtualbox__intnet: 'unused', cumulus__intname: "swp#{intf}", auto_config: false
+    end
+
+    # Apply leaf switch specific configuration
+    leaf1.vm.provision :ansible do |ansible|
+      ansible.playbook = 'provisioning/switch.yml'
+      ansible.sudo = true
+    end
+  end
+
+  config.vm.define 'leaf2' do |leaf2|
+    leaf2.vm.box = 'cumulus-vx-2.5.4-vbox-gchami-2s'
+    leaf2.vm.hostname = "leaf2.#{domain}"
+
+    # Fix the MAC of the management interface
+    leaf2.vm.provider 'virtualbox' do |vbox|
+      vbox.customize ['modifyvm', :id, '--macaddress2', '08002752fe1f']
+    end
+
+    # Internal management network
+    leaf2.vm.network 'private_network', virtualbox__intnet: 'mgmt', cumulus__intname: 'eth1', type: 'dhcp'
+
+    # Internal network for swp* interfaces.
+    leaf2.vm.network 'private_network', virtualbox__intnet: 'l2s1', cumulus__intname: 'swp1'
+    leaf2.vm.network 'private_network', virtualbox__intnet: 'l2s2', cumulus__intname: 'swp2'
+    leaf2.vm.network 'private_network', virtualbox__intnet: 'host2', cumulus__intname: 'swp3'
+
+    # "spares"
+    (4..17).each do |intf|
+      leaf2.vm.network 'private_network', virtualbox__intnet: 'unused', cumulus__intname: "swp#{intf}", auto_config: false
+    end
+    (21..37).each do |intf|
+      leaf2.vm.network 'private_network', virtualbox__intnet: 'unused', cumulus__intname: "swp#{intf}", auto_config: false
+    end
+
+    # Apply leaf switch specific configuration
+    leaf2.vm.provision :ansible do |ansible|
+      ansible.playbook = 'provisioning/switch.yml'
+      ansible.sudo = true
+    end
+  end
+
+  config.vm.define 'leaf3' do |leaf3|
+    leaf3.vm.box = 'cumulus-vx-2.5.4-vbox-gchami-2s'
+    leaf3.vm.hostname = "leaf3.#{domain}"
+
+    # Fix the MAC of the management interface
+    leaf3.vm.provider 'virtualbox' do |vbox|
+      vbox.customize ['modifyvm', :id, '--macaddress2', '08002752fe3f']
+    end
+
+    # Internal management network
+    leaf3.vm.network 'private_network', virtualbox__intnet: 'mgmt', cumulus__intname: 'eth1', type: 'dhcp'
+
+    # Internal network for swp* interfaces.
+    leaf3.vm.network 'private_network', virtualbox__intnet: 'l3s1', cumulus__intname: 'swp1'
+    leaf3.vm.network 'private_network', virtualbox__intnet: 'l3s2', cumulus__intname: 'swp2'
+    leaf3.vm.network 'private_network', virtualbox__intnet: 'host3', cumulus__intname: 'swp3'
+
+    # "spares"
+    (4..17).each do |intf|
+      leaf3.vm.network 'private_network', virtualbox__intnet: 'unused', cumulus__intname: "swp#{intf}", auto_config: false
+    end
+    (21..37).each do |intf|
+      leaf3.vm.network 'private_network', virtualbox__intnet: 'unused', cumulus__intname: "swp#{intf}", auto_config: false
+    end
+
+    # Apply leaf switch specific configuration
+    leaf3.vm.provision :ansible do |ansible|
+      ansible.playbook = 'provisioning/switch.yml'
+      ansible.sudo = true
+    end
+  end
+
+  config.vm.define 'leaf4' do |leaf4|
+    leaf4.vm.box = 'cumulus-vx-2.5.4-vbox-gchami-2s'
+    leaf4.vm.hostname = "leaf4.#{domain}"
+
+    # Fix the MAC of the management interface
+    leaf4.vm.provider 'virtualbox' do |vbox|
+      vbox.customize ['modifyvm', :id, '--macaddress2', '08002752fe4f']
+    end
+
+    # Internal management network
+    leaf4.vm.network 'private_network', virtualbox__intnet: 'mgmt', cumulus__intname: 'eth1', type: 'dhcp'
+
+    # Internal network for swp* interfaces.
+    leaf4.vm.network 'private_network', virtualbox__intnet: 'l4s1', cumulus__intname: 'swp1'
+    leaf4.vm.network 'private_network', virtualbox__intnet: 'l4s2', cumulus__intname: 'swp2'
+    leaf4.vm.network 'private_network', virtualbox__intnet: 'l2srv4', cumulus__intname: 'swp3'
+
+    # "spares"
+    (4..17).each do |intf|
+      leaf4.vm.network 'private_network', virtualbox__intnet: 'unused', cumulus__intname: "swp#{intf}", auto_config: false
+    end
+    (21..37).each do |intf|
+      leaf4.vm.network 'private_network', virtualbox__intnet: 'unused', cumulus__intname: "swp#{intf}", auto_config: false
+    end
+
+    # Apply leaf switch specific configuration
+    leaf4.vm.provision :ansible do |ansible|
+      ansible.playbook = 'provisioning/switch.yml'
+      ansible.sudo = true
+    end
+  end
+
+  config.vm.define 'spine1' do |spine1|
+    spine1.vm.box = 'cumulus-vx-2.5.4-vbox-gchami-2s'
+    spine1.vm.hostname = "spine1.#{domain}"
+
+    # Fix the MAC of the management interface
+    spine1.vm.provider 'virtualbox' do |vbox|
+      vbox.customize ['modifyvm', :id, '--macaddress2', '08002752fe2e']
+    end
+
+    # Internal management network
+    spine1.vm.network 'private_network', virtualbox__intnet: 'mgmt', cumulus__intname: 'eth1', type: 'dhcp'
+
+    # Internal network for swp* interfaces.
+    spine1.vm.network 'private_network', virtualbox__intnet: 'l1s1', cumulus__intname: 'swp1'
+    spine1.vm.network 'private_network', virtualbox__intnet: 'l2s1', cumulus__intname: 'swp2'
+    spine1.vm.network 'private_network', virtualbox__intnet: '13s1', cumulus__intname: 'swp3'
+    spine1.vm.network 'private_network', virtualbox__intnet: 'l4s1', cumulus__intname: 'swp4'
+
+    # "spares"
+    (5..17).each do |intf|
+      spine1.vm.network 'private_network', virtualbox__intnet: 'unused', cumulus__intname: "swp#{intf}", auto_config: false
+    end
+    (21..37).each do |intf|
+      spine1.vm.network 'private_network', virtualbox__intnet: 'unused', cumulus__intname: "swp#{intf}", auto_config: false
+    end
+
+    # Apply leaf switch specific configuration
+    spine1.vm.provision :ansible do |ansible|
+      ansible.playbook = 'provisioning/switch.yml'
+      ansible.sudo = true
+    end
+  end
+
+  config.vm.define 'spine2' do |spine2|
+    spine2.vm.box = 'cumulus-vx-2.5.4-vbox-gchami-2s'
+    spine2.vm.hostname = "leaf2.#{domain}"
+
+    # Fix the MAC of the management interface
+    spine2.vm.provider 'virtualbox' do |vbox|
+      vbox.customize ['modifyvm', :id, '--macaddress2', '08002752fe2f']
+    end
+
+    # Internal management network
+    spine2.vm.network 'private_network', virtualbox__intnet: 'mgmt', cumulus__intname: 'eth1', type: 'dhcp'
+
+    # Internal network for swp* interfaces.
+    spine2.vm.network 'private_network', virtualbox__intnet: 'l1s2', cumulus__intname: 'swp1'
+    spine2.vm.network 'private_network', virtualbox__intnet: 'l2s2', cumulus__intname: 'swp2'
+    spine2.vm.network 'private_network', virtualbox__intnet: 'l3s2', cumulus__intname: 'swp3'
+    spine2.vm.network 'private_network', virtualbox__intnet: 'l4s2', cumulus__intname: 'swp4'
+
+    # "spares"
+    (5..17).each do |intf|
+      spine2.vm.network 'private_network', virtualbox__intnet: 'unused', cumulus__intname: "swp#{intf}", auto_config: false
+    end
+    (21..37).each do |intf|
+      spine2.vm.network 'private_network', virtualbox__intnet: 'unused', cumulus__intname: "swp#{intf}", auto_config: false
+    end
+
+    # Apply leaf switch specific configuration
+    spine2.vm.provision :ansible do |ansible|
+      ansible.playbook = 'provisioning/switch.yml'
+      ansible.sudo = true
+    end
+  end
+
+  config.vm.define "host1" do |host1|
+    host1.vm.box = "ubuntu/trusty64"
+
+    host1.vm.hostname = "host1"
+    host1.vm.network 'private_network', virtualbox__intnet: 'mgmt', type: 'dhcp'
+    host1.vm.network "private_network", virtualbox__intnet: "host1", auto_config: false
+
+
+    host1.vm.provider 'virtualbox' do |vbox|
+      vbox.customize ['modifyvm', :id, '--macaddress1', '08002752fe01']
+    end
+
+    host1.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--nicpromisc2", "allow-vms"]
+      v.customize ["modifyvm", :id, "--nicpromisc3", "allow-vms"]
+      v.customize ["modifyvm", :id, "--nicpromisc4", "allow-vms"]
+      v.customize ["modifyvm", :id, "--nicpromisc5", "allow-vms"]
+    end
+
+    host1.vm.provision "ansible" do |ansible|
+      ansible.playbook = "provisioning/host-provision.yml"
+    end
+  end
+
+  config.vm.define "host2" do |host2|
+    host2.vm.box = "ubuntu/trusty64"
+
+    host2.vm.hostname = "host2"
+    host2.vm.network 'private_network', virtualbox__intnet: 'mgmt', type: 'dhcp'
+    host2.vm.network "private_network", virtualbox__intnet: "host2", auto_config: false
+
+    host2.vm.provider 'virtualbox' do |vbox|
+      vbox.customize ['modifyvm', :id, '--macaddress1', '08002752fe02']
+    end
+
+    host2.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--nicpromisc2", "allow-vms"]
+      v.customize ["modifyvm", :id, "--nicpromisc3", "allow-vms"]
+      v.customize ["modifyvm", :id, "--nicpromisc4", "allow-vms"]
+      v.customize ["modifyvm", :id, "--nicpromisc5", "allow-vms"]
+    end
+
+    host2.vm.provision "ansible" do |ansible|
+      ansible.playbook = "provisioning/host-provision.yml"
+    end
+  end
+
+  config.vm.define "host3" do |host3|
+    host3.vm.box = "ubuntu/trusty64"
+
+    host3.vm.hostname = "host3"
+    host3.vm.network 'private_network', virtualbox__intnet: 'mgmt', type: 'dhcp'
+    host3.vm.network "private_network", virtualbox__intnet: "host3", auto_config: false
+
+    host3.vm.provider 'virtualbox' do |vbox|
+      vbox.customize ['modifyvm', :id, '--macaddress1', '08002752fe03']
+    end
+
+    host3.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--nicpromisc2", "allow-vms"]
+      v.customize ["modifyvm", :id, "--nicpromisc3", "allow-vms"]
+      v.customize ["modifyvm", :id, "--nicpromisc4", "allow-vms"]
+      v.customize ["modifyvm", :id, "--nicpromisc5", "allow-vms"]
+    end
+
+    host3.vm.provision "ansible" do |ansible|
+      ansible.playbook = "provisioning/host-provision.yml"
+    end
+  end
+
+  config.vm.define "host4" do |host4|
+    host4.vm.box = "ubuntu/trusty64"
+
+    host4.vm.hostname = "host4"
+    host4.vm.network "private_network", virtualbox__intnet: "dhcp", auto_config: false
+    host4.vm.network "private_network", virtualbox__intnet: "host4", auto_config: false
+
+    host4.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--nicpromisc2", "allow-vms"]
+      v.customize ["modifyvm", :id, "--nicpromisc3", "allow-vms"]
+      v.customize ["modifyvm", :id, "--nicpromisc4", "allow-vms"]
+      v.customize ["modifyvm", :id, "--nicpromisc5", "allow-vms"]
+    end
+
+    host4.vm.provision "ansible" do |ansible|
+      ansible.playbook = "provisioning/host-provision.yml"
+    end
+  end
+
+end

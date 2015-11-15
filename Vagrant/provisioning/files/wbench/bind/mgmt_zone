@@ -1,0 +1,25 @@
+;
+; BIND data file for 0.168.192.in-addr.arpa zone.
+;
+;
+$ORIGIN 0.168.192.in-addr.arpa.
+$TTL  604800
+@ IN  SOA localhost. root.localhost. (
+    1436792135    ; Serial
+    604800    ; Refresh
+    86400   ; Retry
+    2419200   ; Expire
+    604800  ) ; Negative Cache TTL
+;
+@   IN  NS  .
+;
+1   IN  PTR wbench.lab.local.
+11    IN  PTR leaf1.lab.local.
+12    IN  PTR leaf2.lab.local.
+13    IN  PTR leaf3.lab.local.
+14    IN  PTR leaf4.lab.local.
+15    IN  PTR spine1.lab.local.
+16    IN  PTR spine2.lab.local.
+21    IN  PTR host1.lab.local.
+22    IN  PTR host2.lab.local.
+23    IN  PTR host3.lab.local.
